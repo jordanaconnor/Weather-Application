@@ -11,13 +11,13 @@
 <form action="#" th:action="@{/location}" th:object="${location}" method="post">
     <p><label>
         City or Zip:
-        <input type="text" th:field="*{city}"/>
+        <input type="text" th:field="*{name}"/>
     </label></p>
     <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
 </form>
 
-    <h2>Results</h2>
-    <p th:text="'City: ' + ${location.city}" />
-    <a href="/location">Submit another message</a>
+    <p>Results</p>
+    <p th:text="'City: ' + ${location.name}" />
+
 </body>
 </html>
