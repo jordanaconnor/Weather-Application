@@ -110,8 +110,8 @@ public class WeatherData {
         this.showers = showers;
     }
 
-    public double getRain() {
-        return rain;
+    public void setCurrent(List<Object> current) {
+        this.current = current;
     }
 
     public void setRain(double rain) {
