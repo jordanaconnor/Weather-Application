@@ -1,5 +1,6 @@
 package com.example.weatherapi.controllers;
 
+import com.example.weatherapi.Services.MainService;
 import com.example.weatherapi.domain.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -64,6 +65,8 @@ public class MainController {
 
         //Weather API GET call using Geo Coordinates from above^^
 
+        MainService service = new MainService();
+
         int time = 0;
         double snowfall = 0.00;
         double showers = 0.00;
@@ -76,8 +79,8 @@ public class MainController {
         List<String> hourlyTimes, dailyTimes;
         List<Double> hourlyTemps, maxTemps, minTemps, rainSum, showersSum, snowfallSum, precipitationSum, precipitationHours, windSpeedMax, windGustsMax;
         List<Integer> hourlyWeatherCodes, dailyWeatherCodes, precipitationProb, windDirection;
-        String hourlyTime, hourlyWeatherCode, hourlyTemp, dailyTime, dailyWeatherCode, dailyTempMax,  dailyTempMin, dailyRain, dailyShowers, dailySnowfall, dailyPrecipHours, dailyPrecipSum, dailyPrecipProb, dailyWindSpeedMax, dailyWindGustsMax, dailyWindDirection,  currTimeUnit = "", currIntervalUnit, currTempUnit = "", currHumidityUnit, currApparentTempUnit,  currPrecipUnit = "", currRainUnit = "", currShowersUnit = "", currSnowfallUnit = "", currWxCodeUnit, currCloudCoverUnit = "", currWindSpeedUnit, currWindGustsUnit, currWindDirectionUnit, currTime = "";
-        int currInterval, currHumidity, currWeatherCode, currCloudCover = 0;
+        String convertedDate = "", hourlyTime, hourlyWeatherCode, hourlyTemp, dailyTime, dailyWeatherCode, dailyTempMax,  dailyTempMin, dailyRain, dailyShowers, dailySnowfall, dailyPrecipHours, dailyPrecipSum, dailyPrecipProb, dailyWindSpeedMax, dailyWindGustsMax, dailyWindDirection,  currTimeUnit = "", currIntervalUnit, currTempUnit = "", currHumidityUnit, currApparentTempUnit,  currPrecipUnit = "", currRainUnit = "", currShowersUnit = "", currSnowfallUnit = "", currWxCodeUnit, currCloudCoverUnit = "", currWindSpeedUnit, currWindGustsUnit, currWindDirectionUnit, currTime = "", date = "", Date1 = "", Date2 = "", Date3 = "", Date4 = "", Date5 = "", Date6 = "", Date7 = "";
+        int currInterval, currHumidity, currWeatherCode, currCloudCover = 0, wxCode = 0, wxCode0 = 0, wxCode1 = 0, wxCode2 = 0, wxCode3 = 0, wxCode4 = 0, wxCode5 = 0, wxCode6 = 0;
         double currTemp = 0, currApparentTemp, currPrecip = 0, currRain = 0, currShowers = 0, currSnowfall = 0, currWindGusts, currWindDirection, currWindSpeed;
 
         String weatherURL = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&hourly=,temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_gusts_10m,wind_direction_10m,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch";
@@ -89,7 +92,8 @@ public class MainController {
             wxResponse = objectMapper.convertValue(wxResponse, WeatherData.class);
             String json = objectMapper.writeValueAsString(wxResponse);
 
-            System.out.println(json);
+            //print JSON data to console
+            //System.out.println(json);
 
             //Get Hourly Weather Data
             hourlyTimes = wxResponse.getHourly().getTime();
@@ -160,6 +164,32 @@ public class MainController {
             currWindGustsUnit = wxResponse.getCurrent_units().getWind_gusts_10m();
             currWindDirectionUnit = wxResponse.getCurrent_units().getWind_direction_10m();
 
+            //7 day forecasts
+            Date1 = wxResponse.getDaily().getTime().getFirst();
+            Date2 = wxResponse.getDaily().getTime().get(1);
+            Date3 = wxResponse.getDaily().getTime().get(2);
+            Date4 = wxResponse.getDaily().getTime().get(3);
+            Date5 = wxResponse.getDaily().getTime().get(4);
+            Date6 = wxResponse.getDaily().getTime().get(5);
+            Date7 = wxResponse.getDaily().getTime().get(6);
+
+            for (int dateValue = 0; dateValue < 7; dateValue++) {
+
+            }
+
+            //Loop through 7-Day forecast to output date with wx code to html file
+            for (int listValue = 0; listValue < 7; listValue++) {
+
+                date = wxResponse.getDaily().getTime().get(listValue);
+                wxCode = wxResponse.getDaily().getWeather_code().get(listValue);
+
+                convertedDate = service.convertDateFormat(date);
+
+                model.addAttribute("date" + listValue, convertedDate);
+                model.addAttribute("wxCode" + listValue, wxCode);
+
+            }
+
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
@@ -179,7 +209,6 @@ public class MainController {
         model.addAttribute("CurrentPrecipUnit", currPrecipUnit);
         model.addAttribute("CurrentTempUnit", currTempUnit);
         model.addAttribute("CurrentCloudCoverUnit", currCloudCoverUnit);
-        
 
         return "home";
     }
