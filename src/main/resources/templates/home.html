@@ -18,24 +18,28 @@
     </p>
 </form>
     <h4 th:action="@{/}" th:object="${weatherData}" method="post">Results</h4>
-    <p th:text="'City: ' + ${location.name ?: ''}" />
+<p th:text="'Location: ' + ${locationName ?: ''} + ' ' + ${state ?: ''} + ' ' + ${country ?: ''}" />
 
-    <h4>Current Weather</h4>
+
+<h4>Current Weather</h4>
     <p th:text="'Temperature: ' + ${CurrentTemp ?: ''} + ${CurrentTempUnit ?: ''}" />
+    <p th:text="'Feels like: ' + ${CurrentApparentTemp ?: ''} + ${CurrentApparentTempUnit ?: ''}" />
+    <p th:text="'Weather Conditions: ' + ${CurrWeatherCode ?: ''}" />
     <p th:text="'Precipitation: ' + ${CurrentPrecipitation ?: ''} + ' ' + ${CurrentPrecipUnit ?: ''}"/>
+    <p th:text="'Humidity: ' + ${CurrentHumidity ?: ''} + ${CurrentHumidityUnit ?: ''}"/>
     <p th:text="'Rain: ' + ${CurrentRain ?: ''} + ' ' + ${CurrRainUnit ?: ''}" />
     <p th:text="'Shower: ' + ${CurrentShowers ?: ''} + ' ' + ${CurrShowersUnit ?: ''}" />
     <p th:text="'Snowfall: ' + ${CurrentSnowfall ?: ''} + ' ' + ${CurrSnowfallUnit ?: ''}" />
     <p th:text="'Cloud Coverage: ' + ${CurrentCloudCover ?: ''} + ${CurrentCloudCoverUnit ?: ''}" />
 
     <h4>7-Day Forecast</h4>
-    <p th:text="${date0 ?: ''} + ' - ' + ${wxCode0 ?: ''} + ' - High Temp: ' + ${maxTempDaily0 ?: ''} + ' - Low Temp: ' + ${minTempDaily0 ?: ''}"/>
-    <p th:text="${date1 ?: ''} + ' - ' + ${wxCode1 ?: ''} + ' - High Temp: ' + ${maxTempDaily1 ?: ''} + ' - Low Temp: ' + ${minTempDaily1 ?: ''}"/>
-    <p th:text="${date2 ?: ''} + ' - ' + ${wxCode2 ?: ''} + ' - High Temp: ' + ${maxTempDaily2 ?: ''} + ' - Low Temp: ' + ${minTempDaily2 ?: ''}"/>
-    <p th:text="${date3 ?: ''} + ' - ' + ${wxCode3 ?: ''} + ' - High Temp: ' + ${maxTempDaily3 ?: ''} + ' - Low Temp: ' + ${minTempDaily3 ?: ''}"/>
-    <p th:text="${date4 ?: ''} + ' - ' + ${wxCode4 ?: ''} + ' - High Temp: ' + ${maxTempDaily4 ?: ''} + ' - Low Temp: ' + ${minTempDaily4 ?: ''}"/>
-    <p th:text="${date5 ?: ''} + ' - ' + ${wxCode5 ?: ''} + ' - High Temp: ' + ${maxTempDaily5 ?: ''} + ' - Low Temp: ' + ${minTempDaily5 ?: ''}"/>
-    <p th:text="${date6 ?: ''} + ' - ' + ${wxCode6 ?: ''} + ' - High Temp: ' + ${maxTempDaily6 ?: ''} + ' - Low Temp: ' + ${minTempDaily6 ?: ''}"/>
+    <p th:text="${date0 ?: ''} + ${wxCode0 ?: ''} + ${maxTempDaily0 ?: ''} + ${minTempDaily0 ?: ''}"/>
+    <p th:text="${date1 ?: ''} + ${wxCode1 ?: ''} + ${maxTempDaily1 ?: ''} + ${minTempDaily1 ?: ''}"/>
+    <p th:text="${date2 ?: ''} + ${wxCode2 ?: ''} + ${maxTempDaily2 ?: ''} + ${minTempDaily2 ?: ''}"/>
+    <p th:text="${date3 ?: ''} + ${wxCode3 ?: ''} + ${maxTempDaily3 ?: ''} + ${minTempDaily3 ?: ''}"/>
+    <p th:text="${date4 ?: ''} + ${wxCode4 ?: ''} + ${maxTempDaily4 ?: ''} + ${minTempDaily4 ?: ''}"/>
+    <p th:text="${date5 ?: ''} + ${wxCode5 ?: ''} + ${maxTempDaily5 ?: ''} + ${minTempDaily5 ?: ''}"/>
+    <p th:text="${date6 ?: ''} + ${wxCode6 ?: ''} + ${maxTempDaily6 ?: ''} + ${minTempDaily6 ?: ''}"/>
 
 </body>
 </html>

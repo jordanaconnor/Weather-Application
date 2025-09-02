@@ -32,10 +32,10 @@ public class MainController {
     @PostMapping("/")
     public String locationSubmit(@ModelAttribute LocationData location, Model model, WeatherData weatherData) {
 
-        double latitude = 0;
-        double longitude = 0;
-        String city = location.getName();
+        double latitude = 0,longitude = 0;
+        String locationName = "", city = location.getName(), country = "", state = "";
         city = city.replaceAll(" ", "+");
+
 
         String url = "https://geocoding-api.open-meteo.com/v1/search?name=" + city + "&count=1&language=en&format=json";
 
@@ -47,6 +47,9 @@ public class MainController {
 
             latitude =  results.getLatitude();
             longitude = results.getLongitude();
+            locationName = results.getName();
+            country = results.getCountry();
+            state = results.getAdmin1();
 
             System.out.println("*****************Location API Data***********************");
             System.out.println(url);
@@ -62,6 +65,9 @@ public class MainController {
 
 
         model.addAttribute("location", location);
+        model.addAttribute("locationName", locationName + ", ");
+        model.addAttribute("state", state + ", ");
+        model.addAttribute("country", country);
 
         //Weather API GET call using Geo Coordinates from above^^
 
@@ -79,9 +85,9 @@ public class MainController {
         List<String> hourlyTimes, dailyTimes;
         List<Double> hourlyTemps, maxTemps, minTemps, rainSum, showersSum, snowfallSum, precipitationSum, precipitationHours, windSpeedMax, windGustsMax;
         List<Integer> hourlyWeatherCodes, dailyWeatherCodes, precipitationProb, windDirection;
-        String convertedDate = "", wxCodeString = "", hourlyTime, hourlyWeatherCode, hourlyTemp, dailyTime, dailyWeatherCode, dailyTempMax,  dailyTempMin, dailyRain, dailyShowers, dailySnowfall, dailyPrecipHours, dailyPrecipSum, dailyPrecipProb, dailyWindSpeedMax, dailyWindGustsMax, dailyWindDirection,  currTimeUnit = "", currIntervalUnit, currTempUnit = "", currHumidityUnit, currApparentTempUnit,  currPrecipUnit = "", currRainUnit = "", currShowersUnit = "", currSnowfallUnit = "", currWxCodeUnit, currCloudCoverUnit = "", currWindSpeedUnit, currWindGustsUnit, currWindDirectionUnit, currTime = "", date = "", Date1 = "", Date2 = "", Date3 = "", Date4 = "", Date5 = "", Date6 = "", Date7 = "";
-        int currInterval, currHumidity, currWeatherCode, currCloudCover = 0, wxCode = 0, wxCode0 = 0, wxCode1 = 0, wxCode2 = 0, wxCode3 = 0, wxCode4 = 0, wxCode5 = 0, wxCode6 = 0;
-        double maxTempDaily = 0.00, minTempDaily = 0.00, currTemp = 0, currApparentTemp, currPrecip = 0, currRain = 0, currShowers = 0, currSnowfall = 0, currWindGusts, currWindDirection, currWindSpeed;
+        String currentWxCodeString = "", convertedDate = "", wxCodeString = "", hourlyTime, hourlyWeatherCode, hourlyTemp, dailyTime, dailyWeatherCode, dailyTempMax,  dailyTempMin, dailyRain, dailyShowers, dailySnowfall, dailyPrecipHours, dailyPrecipSum, dailyPrecipProb, dailyWindSpeedMax, dailyWindGustsMax, dailyWindDirection,  currTimeUnit = "", currIntervalUnit, currTempUnit = "", currHumidityUnit = "", currApparentTempUnit = "",  currPrecipUnit = "", currRainUnit = "", currShowersUnit = "", currSnowfallUnit = "", currWxCodeUnit = "", currCloudCoverUnit = "", currWindSpeedUnit, currWindGustsUnit, currWindDirectionUnit, currTime = "", date = "", Date1 = "", Date2 = "", Date3 = "", Date4 = "", Date5 = "", Date6 = "", Date7 = "";
+        int currInterval, currHumidity = 0, currWeatherCode = 0, currCloudCover = 0, wxCode = 0, wxCode0 = 0, wxCode1 = 0, wxCode2 = 0, wxCode3 = 0, wxCode4 = 0, wxCode5 = 0, wxCode6 = 0;
+        double maxTempDaily = 0.00, minTempDaily = 0.00, currTemp = 0, currApparentTemp = 0, currPrecip = 0, currRain = 0, currShowers = 0, currSnowfall = 0, currWindGusts, currWindDirection, currWindSpeed;
 
         String weatherURL = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&hourly=,temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_gusts_10m,wind_direction_10m,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch";
         System.out.println(weatherURL);
@@ -104,38 +110,8 @@ public class MainController {
             hourlyWeatherCode = wxResponse.getHourly_units().getWeather_code();
             hourlyTemp = wxResponse.getHourly_units().getTemperature_2m();
 
-            //Get Daily Weather Data
-            dailyTimes = wxResponse.getDaily().getTime();
-            dailyWeatherCodes = wxResponse.getDaily().getWeather_code();
-            maxTemps = wxResponse.getDaily().getTemperature_2m_max();
-            minTemps = wxResponse.getDaily().getTemperature_2m_min();
-            rainSum = wxResponse.getDaily().getRain_sum();
-            showersSum = wxResponse.getDaily().getShowers_sum();
-            snowfallSum = wxResponse.getDaily().getSnowfall_sum();
-            precipitationSum = wxResponse.getDaily().getPrecipitation_sum();
-            precipitationHours = wxResponse.getDaily().getPrecipitation_hours();
-            precipitationProb = wxResponse.getDaily().getPrecipitation_probability_max();
-            windSpeedMax = wxResponse.getDaily().getWind_speed_10m_max();
-            windGustsMax = wxResponse.getDaily().getWind_gusts_10m_max();
-            windDirection = wxResponse.getDaily().getWind_direction_10m_dominant();
-            //Daily units
-            dailyTime = wxResponse.getDaily_units().getTime();
-            dailyWeatherCode = wxResponse.getDaily_units().getWeather_code();
-            dailyTempMax = wxResponse.getDaily_units().getTemperature_2m_max();
-            dailyTempMin = wxResponse.getDaily_units().getTemperature_2m_min();
-            dailyRain = wxResponse.getDaily_units().getRain_sum();
-            dailyShowers = wxResponse.getDaily_units().getShowers_sum();
-            dailySnowfall = wxResponse.getDaily_units().getSnowfall_sum();
-            dailyPrecipHours = wxResponse.getDaily_units().getPrecipitation_hours();
-            dailyPrecipSum =  wxResponse.getDaily_units().getPrecipitation_sum();
-            dailyPrecipProb = wxResponse.getDaily_units().getPrecipitation_probability_max();
-            dailyWindSpeedMax = wxResponse.getDaily_units().getWind_speed_10m_max();
-            dailyWindGustsMax = wxResponse.getDaily_units().getWind_gusts_10m_max();
-            dailyWindDirection = wxResponse.getDaily_units().getWind_direction_10m_dominant();
 
             //Get Current Weather Data
-            currTime = wxResponse.getCurrent().getTime();
-            currInterval = wxResponse.getCurrent().getInterval();
             currTemp = wxResponse.getCurrent().getTemperature_2m();
             currHumidity = wxResponse.getCurrent().getRelative_humidity_2m();
             currApparentTemp = wxResponse.getCurrent().getApparent_temperature();
@@ -144,13 +120,10 @@ public class MainController {
             currShowers = wxResponse.getCurrent().getShowers();
             currSnowfall = wxResponse.getCurrent().getSnowfall();
             currWeatherCode = wxResponse.getCurrent().getWeather_code();
+            currentWxCodeString = service.convertWXCode(currWeatherCode); //translate wx code to string
             currCloudCover = wxResponse.getCurrent().getCloud_cover();
-            currWindGusts = wxResponse.getCurrent().getWind_gusts_10m();
-            currWindDirection = wxResponse.getCurrent().getWind_direction_10m();
-            currWindSpeed = wxResponse.getCurrent().getWind_speed_10m();
+
             //current units
-            currTimeUnit = wxResponse.getCurrent_units().getTime();
-            currIntervalUnit = wxResponse.getCurrent_units().getInterval();
             currTempUnit = wxResponse.getCurrent_units().getTemperature_2m();
             currHumidityUnit = wxResponse.getCurrent_units().getRelative_humidity_2m();
             currApparentTempUnit = wxResponse.getCurrent_units().getApparent_temperature();
@@ -158,26 +131,9 @@ public class MainController {
             currRainUnit = wxResponse.getCurrent_units().getRain();
             currShowersUnit = wxResponse.getCurrent_units().getShowers();
             currSnowfallUnit = wxResponse.getCurrent_units().getSnowfall();
-            currWxCodeUnit = wxResponse.getCurrent_units().getWeather_code();
             currCloudCoverUnit = wxResponse.getCurrent_units().getCloud_cover();
-            currWindSpeedUnit = wxResponse.getCurrent_units().getWind_speed_10m();
-            currWindGustsUnit = wxResponse.getCurrent_units().getWind_gusts_10m();
-            currWindDirectionUnit = wxResponse.getCurrent_units().getWind_direction_10m();
 
-            //7 day forecasts
-            Date1 = wxResponse.getDaily().getTime().getFirst();
-            Date2 = wxResponse.getDaily().getTime().get(1);
-            Date3 = wxResponse.getDaily().getTime().get(2);
-            Date4 = wxResponse.getDaily().getTime().get(3);
-            Date5 = wxResponse.getDaily().getTime().get(4);
-            Date6 = wxResponse.getDaily().getTime().get(5);
-            Date7 = wxResponse.getDaily().getTime().get(6);
-
-            for (int dateValue = 0; dateValue < 7; dateValue++) {
-
-            }
-
-            //Loop through 7-Day forecast to output date with wx code to html file
+            //Loop through daily data for the 7-Day forecast to output data to html file
             for (int listValue = 0; listValue < 7; listValue++) {
 
                 date = wxResponse.getDaily().getTime().get(listValue);
@@ -188,9 +144,9 @@ public class MainController {
                 convertedDate = service.convertDateFormat(date);
                 wxCodeString = service.convertWXCode(wxCode);
 
-                model.addAttribute("date" + listValue, convertedDate);
-                model.addAttribute("wxCode" + listValue, wxCodeString);
-                model.addAttribute("maxTempDaily" + listValue, maxTempDaily);
+                model.addAttribute("date" + listValue, convertedDate + " - ");
+                model.addAttribute("wxCode" + listValue, wxCodeString + " - High Temp: ");
+                model.addAttribute("maxTempDaily" + listValue, maxTempDaily + " - Low Temp: ");
                 model.addAttribute("minTempDaily" + listValue, minTempDaily);
 
             }
@@ -200,19 +156,22 @@ public class MainController {
         }
 
         //Display current weather data
-        model.addAttribute("CurrentTime", currTime);
-        model.addAttribute("CurrentSnowfall", currSnowfall);
-        model.addAttribute("CurrentShowers", currShowers);
-        model.addAttribute("CurrentRain", currRain);
-        model.addAttribute("CurrentPrecipitation", currPrecip);
         model.addAttribute("CurrentTemp", currTemp);
-        model.addAttribute("CurrentCloudCover", currCloudCover);
-        model.addAttribute("CurrTimeUnit", currTimeUnit);
-        model.addAttribute("CurrSnowfallUnit", currSnowfallUnit);
-        model.addAttribute("CurrShowersUnit", currShowersUnit);
-        model.addAttribute("CurrRainUnit", currRainUnit);
-        model.addAttribute("CurrentPrecipUnit", currPrecipUnit);
         model.addAttribute("CurrentTempUnit", currTempUnit);
+        model.addAttribute("CurrentApparentTemp", currApparentTemp);
+        model.addAttribute("CurrentApparentTempUnit", currApparentTempUnit);
+        model.addAttribute("CurrWeatherCode", currentWxCodeString);
+        model.addAttribute("CurrentPrecipitation", currPrecip);
+        model.addAttribute("CurrentPrecipUnit", currPrecipUnit);
+        model.addAttribute("CurrentHumidity", currHumidity);
+        model.addAttribute("CurrentHumidityUnit", currHumidityUnit);
+        model.addAttribute("CurrentRain", currRain);
+        model.addAttribute("CurrRainUnit", currRainUnit);
+        model.addAttribute("CurrentShowers", currShowers);
+        model.addAttribute("CurrShowersUnit", currShowersUnit);
+        model.addAttribute("CurrentSnowfall", currSnowfall);
+        model.addAttribute("CurrSnowfallUnit", currSnowfallUnit);
+        model.addAttribute("CurrentCloudCover", currCloudCover);
         model.addAttribute("CurrentCloudCoverUnit", currCloudCoverUnit);
 
         return "home";
