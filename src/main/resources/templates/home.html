@@ -29,13 +29,13 @@
     <p th:text="'Cloud Coverage: ' + ${CurrentCloudCover ?: ''} + ${CurrentCloudCoverUnit ?: ''}" />
 
     <h4>7-Day Forecast</h4>
-    <p th:text="'Date: ' + ${date0 ?: ''} + ' ' + ${wxCode0 ?: ''}"/>
-    <p th:text="'Date: ' + ${date1 ?: ''} + ' ' + ${wxCode1 ?: ''}"/>
-    <p th:text="'Date: ' + ${date2 ?: ''} + ' ' + ${wxCode2 ?: ''}"/>
-    <p th:text="'Date: ' + ${date3 ?: ''} + ' ' + ${wxCode3 ?: ''}"/>
-    <p th:text="'Date: ' + ${date4 ?: ''} + ' ' + ${wxCode4 ?: ''}"/>
-    <p th:text="'Date: ' + ${date5 ?: ''} + ' ' + ${wxCode5 ?: ''}"/>
-    <p th:text="'Date: ' + ${date6 ?: ''} + ' ' + ${wxCode6 ?: ''}"/>
+    <p th:text="${date0 ?: ''} + ' - ' + ${wxCode0 ?: ''}"/>
+    <p th:text="${date1 ?: ''} + ' - ' + ${wxCode1 ?: ''}"/>
+    <p th:text="${date2 ?: ''} + ' - ' + ${wxCode2 ?: ''}"/>
+    <p th:text="${date3 ?: ''} + ' - ' + ${wxCode3 ?: ''}"/>
+    <p th:text="${date4 ?: ''} + ' - ' + ${wxCode4 ?: ''}"/>
+    <p th:text="${date5 ?: ''} + ' - ' + ${wxCode5 ?: ''}"/>
+    <p th:text="${date6 ?: ''} + ' - ' + ${wxCode6 ?: ''}"/>
 
 </body>
 </html>

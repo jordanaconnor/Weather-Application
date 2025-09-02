@@ -79,7 +79,7 @@ public class MainController {
         List<String> hourlyTimes, dailyTimes;
         List<Double> hourlyTemps, maxTemps, minTemps, rainSum, showersSum, snowfallSum, precipitationSum, precipitationHours, windSpeedMax, windGustsMax;
         List<Integer> hourlyWeatherCodes, dailyWeatherCodes, precipitationProb, windDirection;
-        String convertedDate = "", hourlyTime, hourlyWeatherCode, hourlyTemp, dailyTime, dailyWeatherCode, dailyTempMax,  dailyTempMin, dailyRain, dailyShowers, dailySnowfall, dailyPrecipHours, dailyPrecipSum, dailyPrecipProb, dailyWindSpeedMax, dailyWindGustsMax, dailyWindDirection,  currTimeUnit = "", currIntervalUnit, currTempUnit = "", currHumidityUnit, currApparentTempUnit,  currPrecipUnit = "", currRainUnit = "", currShowersUnit = "", currSnowfallUnit = "", currWxCodeUnit, currCloudCoverUnit = "", currWindSpeedUnit, currWindGustsUnit, currWindDirectionUnit, currTime = "", date = "", Date1 = "", Date2 = "", Date3 = "", Date4 = "", Date5 = "", Date6 = "", Date7 = "";
+        String convertedDate = "", wxCodeString = "", hourlyTime, hourlyWeatherCode, hourlyTemp, dailyTime, dailyWeatherCode, dailyTempMax,  dailyTempMin, dailyRain, dailyShowers, dailySnowfall, dailyPrecipHours, dailyPrecipSum, dailyPrecipProb, dailyWindSpeedMax, dailyWindGustsMax, dailyWindDirection,  currTimeUnit = "", currIntervalUnit, currTempUnit = "", currHumidityUnit, currApparentTempUnit,  currPrecipUnit = "", currRainUnit = "", currShowersUnit = "", currSnowfallUnit = "", currWxCodeUnit, currCloudCoverUnit = "", currWindSpeedUnit, currWindGustsUnit, currWindDirectionUnit, currTime = "", date = "", Date1 = "", Date2 = "", Date3 = "", Date4 = "", Date5 = "", Date6 = "", Date7 = "";
         int currInterval, currHumidity, currWeatherCode, currCloudCover = 0, wxCode = 0, wxCode0 = 0, wxCode1 = 0, wxCode2 = 0, wxCode3 = 0, wxCode4 = 0, wxCode5 = 0, wxCode6 = 0;
         double currTemp = 0, currApparentTemp, currPrecip = 0, currRain = 0, currShowers = 0, currSnowfall = 0, currWindGusts, currWindDirection, currWindSpeed;
 
@@ -184,9 +184,10 @@ public class MainController {
                 wxCode = wxResponse.getDaily().getWeather_code().get(listValue);
 
                 convertedDate = service.convertDateFormat(date);
+                wxCodeString = service.convertWXCode(wxCode);
 
                 model.addAttribute("date" + listValue, convertedDate);
-                model.addAttribute("wxCode" + listValue, wxCode);
+                model.addAttribute("wxCode" + listValue, wxCodeString);
 
             }
 

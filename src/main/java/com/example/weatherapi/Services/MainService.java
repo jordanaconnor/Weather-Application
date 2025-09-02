@@ -47,10 +47,8 @@ public class MainService {
             put(99, "Thunderstorm and Heavy Hail");
         }};
 
-        if wxCodeMeanings.containsKey(wxCode) {
-            String value = wxCodeMeanings.get(wxCode);
-            return value;
-        }
+        boolean checkValue = wxCodeMeanings.containsKey(wxCode);
+        return wxCodeMeanings.getOrDefault(wxCode, "Could not locate Weather Code");
 
 
 
