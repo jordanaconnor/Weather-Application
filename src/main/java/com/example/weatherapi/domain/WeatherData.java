@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherData {
 
-
     private double latitude;
     private double longitude;
     private double generationtime_ms;
@@ -13,14 +12,13 @@ public class WeatherData {
     private String timezone;
     private String timezone_abbreviation;
     private double elevation;
-    private int time;
-    private int interval;
-    private double snowfall;
-    private double showers;
-    private double rain;
-    private double precipitation;
-    private double temperature_2m;
-    private int cloud_cover;
+
+    private Current current;
+    private CurrentUnits current_units;
+    private Daily daily;
+    private DailyUnits daily_units;
+    private Hourly hourly;
+    private HourlyUnits hourly_units;
 
     public double getLatitude() {
         return latitude;
@@ -78,67 +76,52 @@ public class WeatherData {
         this.elevation = elevation;
     }
 
-    public int getTime() {
-        return time;
+    public Current getCurrent() {
+        return current;
     }
 
-    public void setTime(int time) {
-        this.time = time;
-    }
-
-    public int getInterval() {
-        return interval;
-    }
-
-    public void setInterval(int interval) {
-        this.interval = interval;
-    }
-
-    public double getSnowfall() {
-        return snowfall;
-    }
-
-    public void setSnowfall(double snowfall) {
-        this.snowfall = snowfall;
-    }
-
-    public double getShowers() {
-        return showers;
-    }
-
-    public void setShowers(double showers) {
-        this.showers = showers;
-    }
-
-    public void setCurrent(List<Object> current) {
+    public void setCurrent(Current current) {
         this.current = current;
     }
 
-    public void setRain(double rain) {
-        this.rain = rain;
+    public CurrentUnits getCurrent_units() {
+        return current_units;
     }
 
-    public double getPrecipitation() {
-        return precipitation;
+    public void setCurrent_units(CurrentUnits current_units) {
+        this.current_units = current_units;
     }
 
-    public void setPrecipitation(double precipitation) {
-        this.precipitation = precipitation;
+    public Daily getDaily() {
+        return daily;
     }
 
-    public double getTemperature_2m() {
-        return temperature_2m;
+    public void setDaily(Daily daily) {
+        this.daily = daily;
     }
 
-    public void setTemperature_2m(double temperature_2m) {
-        this.temperature_2m = temperature_2m;
+    public DailyUnits getDaily_units() {
+        return daily_units;
     }
 
-    public int getCloud_cover() {
-        return cloud_cover;
+    public void setDaily_units(DailyUnits daily_units) {
+        this.daily_units = daily_units;
     }
 
-    public void setCloud_cover(int cloud_cover) {
-        this.cloud_cover = cloud_cover;
+    public Hourly getHourly() {
+        return hourly;
+    }
+
+    public void setHourly(Hourly hourly) {
+        this.hourly = hourly;
+    }
+
+    public HourlyUnits getHourly_units() {
+        return hourly_units;
+    }
+
+    public void setHourly_units(HourlyUnits hourly_units) {
+        this.hourly_units = hourly_units;
     }
 }
+

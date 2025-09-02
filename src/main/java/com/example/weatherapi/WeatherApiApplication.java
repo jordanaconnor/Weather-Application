@@ -23,7 +23,6 @@ public class WeatherApiApplication {
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
-
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, false);
 
         return objectMapper;

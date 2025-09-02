@@ -12,6 +12,7 @@ public class LocationResponse {
     public List<LocationData> getResults() {
         return results;
     }
+
     public void setResults(List<LocationData> results) {
         this.results = results;
     }
