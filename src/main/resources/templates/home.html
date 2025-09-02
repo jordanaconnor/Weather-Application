@@ -29,13 +29,13 @@
     <p th:text="'Cloud Coverage: ' + ${CurrentCloudCover ?: ''} + ${CurrentCloudCoverUnit ?: ''}" />
 
     <h4>7-Day Forecast</h4>
-    <p th:text="${date0 ?: ''} + ' - ' + ${wxCode0 ?: ''}"/>
-    <p th:text="${date1 ?: ''} + ' - ' + ${wxCode1 ?: ''}"/>
-    <p th:text="${date2 ?: ''} + ' - ' + ${wxCode2 ?: ''}"/>
-    <p th:text="${date3 ?: ''} + ' - ' + ${wxCode3 ?: ''}"/>
-    <p th:text="${date4 ?: ''} + ' - ' + ${wxCode4 ?: ''}"/>
-    <p th:text="${date5 ?: ''} + ' - ' + ${wxCode5 ?: ''}"/>
-    <p th:text="${date6 ?: ''} + ' - ' + ${wxCode6 ?: ''}"/>
+    <p th:text="${date0 ?: ''} + ' - ' + ${wxCode0 ?: ''} + ' - High Temp: ' + ${maxTempDaily0 ?: ''} + ' - Low Temp: ' + ${minTempDaily0 ?: ''}"/>
+    <p th:text="${date1 ?: ''} + ' - ' + ${wxCode1 ?: ''} + ' - High Temp: ' + ${maxTempDaily1 ?: ''} + ' - Low Temp: ' + ${minTempDaily1 ?: ''}"/>
+    <p th:text="${date2 ?: ''} + ' - ' + ${wxCode2 ?: ''} + ' - High Temp: ' + ${maxTempDaily2 ?: ''} + ' - Low Temp: ' + ${minTempDaily2 ?: ''}"/>
+    <p th:text="${date3 ?: ''} + ' - ' + ${wxCode3 ?: ''} + ' - High Temp: ' + ${maxTempDaily3 ?: ''} + ' - Low Temp: ' + ${minTempDaily3 ?: ''}"/>
+    <p th:text="${date4 ?: ''} + ' - ' + ${wxCode4 ?: ''} + ' - High Temp: ' + ${maxTempDaily4 ?: ''} + ' - Low Temp: ' + ${minTempDaily4 ?: ''}"/>
+    <p th:text="${date5 ?: ''} + ' - ' + ${wxCode5 ?: ''} + ' - High Temp: ' + ${maxTempDaily5 ?: ''} + ' - Low Temp: ' + ${minTempDaily5 ?: ''}"/>
+    <p th:text="${date6 ?: ''} + ' - ' + ${wxCode6 ?: ''} + ' - High Temp: ' + ${maxTempDaily6 ?: ''} + ' - Low Temp: ' + ${minTempDaily6 ?: ''}"/>
 
 </body>
 </html>
