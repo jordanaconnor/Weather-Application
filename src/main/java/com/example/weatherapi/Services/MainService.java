@@ -14,6 +14,10 @@ public class MainService {
         return localDate.format(outputFormatter);
     }
 
+    public String extractTime(String date) {
+        return date.substring(date.indexOf("T") + 1);
+    }
+
     public String convertWXCode(int wxCode) {
 
         Map<Integer, String> wxCodeMeanings = new HashMap<>() {{

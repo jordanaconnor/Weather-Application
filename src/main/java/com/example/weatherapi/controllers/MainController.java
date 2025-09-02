@@ -85,9 +85,9 @@ public class MainController {
         List<String> hourlyTimes, dailyTimes;
         List<Double> hourlyTemps, maxTemps, minTemps, rainSum, showersSum, snowfallSum, precipitationSum, precipitationHours, windSpeedMax, windGustsMax;
         List<Integer> hourlyWeatherCodes, dailyWeatherCodes, precipitationProb, windDirection;
-        String currentWxCodeString = "", convertedDate = "", wxCodeString = "", hourlyTime, hourlyWeatherCode, hourlyTemp, dailyTime, dailyWeatherCode, dailyTempMax,  dailyTempMin, dailyRain, dailyShowers, dailySnowfall, dailyPrecipHours, dailyPrecipSum, dailyPrecipProb, dailyWindSpeedMax, dailyWindGustsMax, dailyWindDirection,  currTimeUnit = "", currIntervalUnit, currTempUnit = "", currHumidityUnit = "", currApparentTempUnit = "",  currPrecipUnit = "", currRainUnit = "", currShowersUnit = "", currSnowfallUnit = "", currWxCodeUnit = "", currCloudCoverUnit = "", currWindSpeedUnit, currWindGustsUnit, currWindDirectionUnit, currTime = "", date = "", Date1 = "", Date2 = "", Date3 = "", Date4 = "", Date5 = "", Date6 = "", Date7 = "";
-        int currInterval, currHumidity = 0, currWeatherCode = 0, currCloudCover = 0, wxCode = 0, wxCode0 = 0, wxCode1 = 0, wxCode2 = 0, wxCode3 = 0, wxCode4 = 0, wxCode5 = 0, wxCode6 = 0;
-        double maxTempDaily = 0.00, minTempDaily = 0.00, currTemp = 0, currApparentTemp = 0, currPrecip = 0, currRain = 0, currShowers = 0, currSnowfall = 0, currWindGusts, currWindDirection, currWindSpeed;
+        String currentWxCodeString = "", hourTime = "", convertedDate = "", wxCodeString = "", currTempUnit = "", currHumidityUnit = "", currApparentTempUnit = "",  currPrecipUnit = "", currRainUnit = "", currShowersUnit = "", currSnowfallUnit = "", currCloudCoverUnit = "", date = "", dateAndTime = "";
+        int currHumidity = 0, currWeatherCode = 0, currCloudCover = 0, wxCode = 0;
+        double hourTemp = 0.00, maxTempDaily = 0.00, minTempDaily = 0.00, currTemp = 0, currApparentTemp = 0, currPrecip = 0, currRain = 0, currShowers = 0, currSnowfall = 0;
 
         String weatherURL = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&hourly=,temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_gusts_10m,wind_direction_10m,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch";
         System.out.println(weatherURL);
@@ -101,14 +101,23 @@ public class MainController {
             //print JSON data to console
             //System.out.println(json);
 
-            //Get Hourly Weather Data
-            hourlyTimes = wxResponse.getHourly().getTime();
-            hourlyTemps = wxResponse.getHourly().getTemperature_2m();
-            hourlyWeatherCodes = wxResponse.getHourly().getWeather_code();
-            //Hourly units
-            hourlyTime = wxResponse.getHourly_units().getTime();
-            hourlyWeatherCode = wxResponse.getHourly_units().getWeather_code();
-            hourlyTemp = wxResponse.getHourly_units().getTemperature_2m();
+            //Get hourly times
+            for (int listValue = 0; listValue < 24; listValue++) {
+
+                dateAndTime = wxResponse.getHourly().getTime().get(listValue);
+                wxCode = wxResponse.getHourly().getWeather_code().get(listValue);
+                hourTemp = wxResponse.getHourly().getTemperature_2m().get(listValue);
+
+                hourTime = service.extractTime(dateAndTime);
+                wxCodeString = service.convertWXCode(wxCode);
+
+                model.addAttribute("Hour" + listValue, hourTime);
+                model.addAttribute("wxCodeHour" + listValue, wxCodeString);
+                model.addAttribute("hourTemp" + listValue, hourTemp);
+                System.out.println(hourTime);
+                System.out.println(wxCodeString);
+                System.out.println(hourTemp);
+            }
 
 
             //Get Current Weather Data
