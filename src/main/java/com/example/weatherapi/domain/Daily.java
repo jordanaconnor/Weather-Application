@@ -2,24 +2,26 @@ package com.example.weatherapi.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Daily {
 
-    private List<String> time;
-    private List<Integer> weather_code;
-    private List<Double> temperature_2m_max;
-    private List<Double> temperature_2m_min;
-    private List<Double> rain_sum;
-    private List<Double> showers_sum;
-    private List<Double> snowfall_sum;
-    private List<Double> precipitation_sum;
-    private List<Double> precipitation_hours;
-    private List<Integer> precipitation_probability_max;
-    private List<Double> wind_speed_10m_max;
-    private List<Double> wind_gusts_10m_max;
-    private List<Integer> wind_direction_10m_dominant;
+    private List<String> time = new ArrayList<>(Collections.nCopies(7, "9999-01-01"));
+    private List<Integer> weather_code = new ArrayList<>(Collections.nCopies(7, 0));
+    private List<Double> temperature_2m_max =  new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Double> temperature_2m_min = new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Double> rain_sum = new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Double> showers_sum = new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Double> snowfall_sum = new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Double> precipitation_sum = new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Double> precipitation_hours = new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Integer> precipitation_probability_max = new ArrayList<>(Collections.nCopies(7, 0));
+    private List<Double> wind_speed_10m_max = new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Double> wind_gusts_10m_max = new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Integer> wind_direction_10m_dominant = new ArrayList<>(Collections.nCopies(7, 0));
 
     public List<String> getTime() {
         return time;

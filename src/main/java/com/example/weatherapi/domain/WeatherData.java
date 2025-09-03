@@ -13,12 +13,12 @@ public class WeatherData {
     private String timezone_abbreviation;
     private double elevation;
 
-    private Current current;
-    private CurrentUnits current_units;
-    private Daily daily;
-    private DailyUnits daily_units;
-    private Hourly hourly;
-    private HourlyUnits hourly_units;
+    private Current current =  new Current();
+    private CurrentUnits current_units = new CurrentUnits();
+    private Daily daily = new Daily();
+    private DailyUnits daily_units = new DailyUnits();
+    private Hourly hourly = new Hourly();
+    private HourlyUnits hourly_units =  new HourlyUnits();
 
     public double getLatitude() {
         return latitude;

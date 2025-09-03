@@ -21,7 +21,7 @@
 <p th:text="'Location: ' + ${locationName ?: ''} + ' ' + ${state ?: ''} + ' ' + ${country ?: ''}" />
 
 
-<h4>Current Weather</h4>
+    <h4>Current Weather</h4>
     <p th:text="'Temperature: ' + ${CurrentTemp ?: ''} + ${CurrentTempUnit ?: ''}" />
     <p th:text="'Feels like: ' + ${CurrentApparentTemp ?: ''} + ${CurrentApparentTempUnit ?: ''}" />
     <p th:text="'Weather Conditions: ' + ${CurrWeatherCode ?: ''}" />
@@ -33,13 +33,18 @@
     <p th:text="'Cloud Coverage: ' + ${CurrentCloudCover ?: ''} + ${CurrentCloudCoverUnit ?: ''}" />
 
     <h4>7-Day Forecast</h4>
-    <p th:text="${date0 ?: ''} + ${wxCode0 ?: ''} + ${maxTempDaily0 ?: ''} + ${minTempDaily0 ?: ''}"/>
-    <p th:text="${date1 ?: ''} + ${wxCode1 ?: ''} + ${maxTempDaily1 ?: ''} + ${minTempDaily1 ?: ''}"/>
-    <p th:text="${date2 ?: ''} + ${wxCode2 ?: ''} + ${maxTempDaily2 ?: ''} + ${minTempDaily2 ?: ''}"/>
-    <p th:text="${date3 ?: ''} + ${wxCode3 ?: ''} + ${maxTempDaily3 ?: ''} + ${minTempDaily3 ?: ''}"/>
-    <p th:text="${date4 ?: ''} + ${wxCode4 ?: ''} + ${maxTempDaily4 ?: ''} + ${minTempDaily4 ?: ''}"/>
-    <p th:text="${date5 ?: ''} + ${wxCode5 ?: ''} + ${maxTempDaily5 ?: ''} + ${minTempDaily5 ?: ''}"/>
-    <p th:text="${date6 ?: ''} + ${wxCode6 ?: ''} + ${maxTempDaily6 ?: ''} + ${minTempDaily6 ?: ''}"/>
+        <div class="7-Day-Forecast" th:each="day : ${#numbers.sequence(0, weather.daily.time.size() -1)}"
+                    th:if="${MainService.convertDateFormat(weather.daily.time[day]) != 'Jan 01'}">
+            <span class="Daily-DateTime" th:text="${MainService.convertDateFormat(weather.daily.time[day])}"></span>
 
+        </div>
+
+    <h4>Hourly Forecast</h4>
+        <div class="hourly-data" th:each="hour : ${#numbers.sequence(0, weather.hourly.temperature_2m.size() -145)}"
+                                    th:if="${MainService.convertWXCode(weather.hourly.weather_code[hour]) != 0 and weather.hourly.temperature_2m[hour] != 0.00}"><!--Loops through Hourly Classes x24 times for the 24 hours-->
+
+            <span class="hourly-time" th:text="${weather.hourly.temperature_2m[hour]}"></span>
+            <span class="hourly-forecast" th:text="${MainService.convertWXCode(weather.hourly.weather_code[hour])}"></span>
+        </div>
 </body>
 </html>

@@ -10,13 +10,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MainController {
 
     @Autowired
     private RestTemplate restTemplate;
+    MainService service = new MainService();
 
     public MainController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -25,6 +28,8 @@ public class MainController {
     @GetMapping("/")
     public String showDashboard(Model model) {
         model.addAttribute("location", new LocationData());
+        model.addAttribute("weather", new WeatherData());
+        model.addAttribute("MainService",  service);
         return "home";
     }
 
@@ -63,15 +68,14 @@ public class MainController {
             System.out.println(e.getMessage());
         }
 
-
+        //this is the response to thymeleaf for the location but from the API. Review after implementing the HashMap
+        //these attributes could probably be consolidated after the other api call...all attributes being added to the single HashMap.
         model.addAttribute("location", location);
         model.addAttribute("locationName", locationName + ", ");
         model.addAttribute("state", state + ", ");
         model.addAttribute("country", country);
 
         //Weather API GET call using Geo Coordinates from above^^
-
-        MainService service = new MainService();
 
         int time = 0;
         double snowfall = 0.00;
@@ -89,35 +93,19 @@ public class MainController {
         int currHumidity = 0, currWeatherCode = 0, currCloudCover = 0, wxCode = 0;
         double hourTemp = 0.00, maxTempDaily = 0.00, minTempDaily = 0.00, currTemp = 0, currApparentTemp = 0, currPrecip = 0, currRain = 0, currShowers = 0, currSnowfall = 0;
 
-        String weatherURL = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&hourly=,temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_gusts_10m,wind_direction_10m,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch";
+        String weatherURL = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&hourly=,temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_gusts_10m,wind_direction_10m,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto";
         System.out.println(weatherURL);
 
         try{
             ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
             WeatherData wxResponse = restTemplate.getForObject(weatherURL, WeatherData.class); //GET API Data call
-            wxResponse = objectMapper.convertValue(wxResponse, WeatherData.class);
+            //wxResponse = objectMapper.convertValue(wxResponse, WeatherData.class);
             String json = objectMapper.writeValueAsString(wxResponse);
+            model.addAttribute("weather", wxResponse);
+            model.addAttribute("MainService", service);
 
             //print JSON data to console
             //System.out.println(json);
-
-            //Get hourly times
-            for (int listValue = 0; listValue < 24; listValue++) {
-
-                dateAndTime = wxResponse.getHourly().getTime().get(listValue);
-                wxCode = wxResponse.getHourly().getWeather_code().get(listValue);
-                hourTemp = wxResponse.getHourly().getTemperature_2m().get(listValue);
-
-                hourTime = service.extractTime(dateAndTime);
-                wxCodeString = service.convertWXCode(wxCode);
-
-                model.addAttribute("Hour" + listValue, hourTime);
-                model.addAttribute("wxCodeHour" + listValue, wxCodeString);
-                model.addAttribute("hourTemp" + listValue, hourTemp);
-                System.out.println(hourTime);
-                System.out.println(wxCodeString);
-                System.out.println(hourTemp);
-            }
 
 
             //Get Current Weather Data
@@ -142,23 +130,6 @@ public class MainController {
             currSnowfallUnit = wxResponse.getCurrent_units().getSnowfall();
             currCloudCoverUnit = wxResponse.getCurrent_units().getCloud_cover();
 
-            //Loop through daily data for the 7-Day forecast to output data to html file
-            for (int listValue = 0; listValue < 7; listValue++) {
-
-                date = wxResponse.getDaily().getTime().get(listValue);
-                wxCode = wxResponse.getDaily().getWeather_code().get(listValue);
-                maxTempDaily = wxResponse.getDaily().getTemperature_2m_max().get(listValue);
-                minTempDaily = wxResponse.getDaily().getTemperature_2m_min().get(listValue);
-
-                convertedDate = service.convertDateFormat(date);
-                wxCodeString = service.convertWXCode(wxCode);
-
-                model.addAttribute("date" + listValue, convertedDate + " - ");
-                model.addAttribute("wxCode" + listValue, wxCodeString + " - High Temp: ");
-                model.addAttribute("maxTempDaily" + listValue, maxTempDaily + " - Low Temp: ");
-                model.addAttribute("minTempDaily" + listValue, minTempDaily);
-
-            }
 
         }catch(Exception e){
             System.out.println(e.getMessage());
@@ -182,6 +153,7 @@ public class MainController {
         model.addAttribute("CurrSnowfallUnit", currSnowfallUnit);
         model.addAttribute("CurrentCloudCover", currCloudCover);
         model.addAttribute("CurrentCloudCoverUnit", currCloudCoverUnit);
+
 
         return "home";
     }
