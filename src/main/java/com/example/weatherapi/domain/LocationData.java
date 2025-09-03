@@ -8,22 +8,22 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationData {
 
-    private int id;
-    private String name;
-    private double latitude;
-    private double longitude;
-    private double elevation;
-    private String feature_code;
-    private String country_code;
-    private int admin1_id;
-    private int admin2_id;
-    private String timezone;
-    private int population;
+    private int id = 0;
+    private String name = null;
+    private double latitude = 0.00;
+    private double longitude = 0.00;
+    private double elevation = 0.00;
+    private String feature_code = null;
+    private String country_code = null;
+    private int admin1_id = 0;
+    private int admin2_id = 0;
+    private String timezone = null;
+    private int population = 0;
     private List<String> postcodes;
-    private int country_id;
-    private String country;
-    private String admin1;
-    private String admin2;
+    private int country_id = 0;
+    private String country = null;
+    private String admin1 = null;
+    private String admin2 = null;
 
 
     public int getId() {
