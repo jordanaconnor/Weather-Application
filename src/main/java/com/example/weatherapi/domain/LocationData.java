@@ -19,7 +19,7 @@ public class LocationData {
     private int admin2_id = 0;
     private String timezone = null;
     private int population = 0;
-    private List<String> postcodes;
+    private List<String> postcodes = new ArrayList<>();
     private int country_id = 0;
     private String country = null;
     private String admin1 = null;

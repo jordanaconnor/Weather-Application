@@ -1,10 +1,13 @@
 package com.example.weatherapi.Services;
 
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class MainService {
 
     public String convertDateFormat(String date) {
@@ -53,9 +56,5 @@ public class MainService {
 
         boolean checkValue = wxCodeMeanings.containsKey(wxCode);
         return wxCodeMeanings.getOrDefault(wxCode, "Could not locate Weather Code");
-
-
-
-        //return wxDescription;
     }
 }
