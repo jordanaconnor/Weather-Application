@@ -3,7 +3,8 @@
 <head>
     <title>My Weather App</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/weather-icons.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="icon" href="data:,">
 </head>
 
@@ -15,116 +16,66 @@
 
     <header class="header">
         <h1 style="text-align: center">Weather Dashboard</h1>
-        <form class="header-middle" th:object="${location}" method="post">
-            <span><label>Search:
+    </header>
+
+    <div class="search-bar">
+        <form th:action="@{/}" th:object="${location}" method="post">
+            <span class="header-middle"><label>Search:
                 <input type="text" id="Search:" placeholder="City or ZIP Code" th:field="*{name}"/>
                 <input type="submit" value="Submit" />
                 <input type="reset" value="Reset" />
             </label></span>
         </form>
-    </header>
+    </div>
 
     <main  class="center-panel">
         <p th:action="@{/}" th:object="${location}">
+        <div>
+            <span class="location-name" th:text="${locationName ?: ''}"></span>
+            <span class="location-name" th:if="${locationName == 'London'}">, England, United Kingdom</span>
+    </div>
 
-            <div>
-                <span th:text="${locationName ?: ''}"></span>
+        <div class="weather-sections">
+            <div class="current-weather">
+                <!--Current Weather-->
+                <div class="current-weather-icon">
+                    <i th:class="${MainService.getWeatherIcon(weather.current.weather_code)}"></i>
+                </div>
+
+                <div th:if="${weather.current.temperature_2m != 0.00}">
+                    <br><span th:text="${MainService.convertWXCode(weather.current.weather_code)}" /><br><br>
+                    <span th:text="'Currently ' + ${weather.current.temperature_2m} + ${weather.current_units.temperature_2m}" /><br>
+                    <span th:text="'Feels like: ' + ${weather.current.apparent_temperature} + ${weather.current_units.apparent_temperature}" /><br>
+                </div>
             </div>
 
-            <h4>Current Weather</h4>
-            <div th:if="${weather.current.temperature_2m != 0.00}">
-                <span th:text="'Temperature: ' + ${weather.current.temperature_2m}" />
-                <span th:text="'Feels like: ' + ${weather.current.apparent_temperature}" />
-                <span th:text="'Weather Conditions: ' + ${MainService.convertWXCode(weather.current.weather_code)}" />
-                <span th:text="'Precipitation: ' + ${weather.current.precipitation}"/>
-                <span th:text="'Humidity: ' + ${weather.current.relative_humidity_2m}"/>
-                <span th:text="'Rain: ' + ${weather.current.rain}" />
-                <span th:text="'Shower: ' + ${weather.current.showers}" />
-                <span th:text="'Snowfall: ' + ${weather.current.snowfall}" />
-                <span th:text="'Cloud Coverage: ' + ${weather.current.cloud_cover}" />
+            <div class="seven-day">
+                <h4>7-Day Forecast</h4>
+                <article class="day-card">
+                    <aside class="Seven-Day-Forecast"
+                           th:each="day : ${#numbers.sequence(0, weather.daily.time.size() -1)}"
+                           th:if="${MainService.convertDateFormat(weather.daily.time[day]) != 'Jan 01'}">
+                        <span class="Daily-DateTime" th:text="${MainService.convertDateFormat(weather.daily.time[day])}"></span>
+                        <span class="Daily-Wx-Code" th:text="${MainService.convertWXCode(weather.daily.weather_code[day])}"></span>
+                        <span class="Daily-Min-Temp" th:text="${weather.daily.temperature_2m_min[day]}"></span>
+                        <span class="Daily-Max-Temp" th:text="${weather.daily.temperature_2m_max[day]}"></span>
+                    </aside>
+                </article>
             </div>
+        </div>
 
-            <h4>7-Day Forecast</h4>
-            <article class="day-card">
-                <aside class="Seven-Day-Forecast" th:each="day : ${#numbers.sequence(0, weather.daily.time.size() -1)}"
-                            th:if="${MainService.convertDateFormat(weather.daily.time[day]) != 'Jan 01'}">
-                    <span class="Daily-DateTime" th:text="${MainService.convertDateFormat(weather.daily.time[day])}"></span>
-                    <span class="Daily-Wx-Code" th:text="${MainService.convertWXCode(weather.daily.weather_code[day])}"></span>
-                    <span class="Daily-Min-Temp" th:text="${weather.daily.temperature_2m_min[day]}"></span>
-                    <span class="Daily-Max-Temp" th:text="${weather.daily.temperature_2m_max[day]}"></span>
-                </aside>
-            </article>
 
-            <h4>Hourly Forecast</h4>
-            <div class="scroller" th:each="hour : ${#numbers.sequence(0, weather.hourly.temperature_2m.size() -145)}"
-                                        th:if="${MainService.convertWXCode(weather.hourly.weather_code[hour]) != 0 and weather.hourly.temperature_2m[hour] != 0.00}"><!--Loops through Hourly Classes x24 times for the 24 hours-->
-                <span class="hour-card">
-                    <span th:text="${MainService.convertWXCode(weather.hourly.weather_code[hour])}"></span>
-                    <span th:text="${weather.hourly.temperature_2m[hour]}"></span>
-                </span>
+        <h4>Hourly Forecast</h4>
+        <div class="scroller">
+            <div class="hour-card"
+                 th:each="hour : ${#numbers.sequence(0, weather.hourly.temperature_2m.size() -145)}"
+                 th:if="${MainService.convertWXCode(weather.hourly.weather_code[hour]) != 0 and weather.hourly.temperature_2m[hour] != 0.00}">
+                <span th:text="${MainService.convertWXCode(weather.hourly.weather_code[hour])}"></span>
+                <span th:text="${weather.hourly.temperature_2m[hour]}"></span>
             </div>
+        </div>
+
     </main>
-    <script>
-        const GEO_FLAG = "geoSubmittedOnce";
-        const WX_LOC   = "wxLocation";
 
-        window.addEventListener("load", () => {
-            const searchParams = new URLSearchParams(location.search);
-
-            // if we already landed here because of auto, stop, and clean the URL once
-            if (searchParams.get("auto") === "1") {
-                history.replaceState(null, "", location.pathname); // strip ?auto=1 from URL
-                sessionStorage.setItem(GEO_FLAG, "1");
-                return;
-            }
-
-            // saved coords? use them (but only if we haven't auto-submitted in this current session/tab)
-            if (!sessionStorage.getItem(GEO_FLAG)) {
-                const saved = localStorage.getItem(WX_LOC);
-                if (saved) {
-                    const { lat, lon } = JSON.parse(saved);
-                    submitFormWithCoords(lat, lon);// GET URL for query
-                    return;
-                }
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(success, error, { timeout: 8000 });
-                } else {
-                    sendFallback("London");
-                }
-            }
-        });
-
-        function success(pos){
-            const lat = pos.coords.latitude, lon = pos.coords.longitude;
-            localStorage.setItem(WX_LOC, JSON.stringify({lat, lon}));
-            submitFormWithCoords(lat, lon);
-        }
-        function error(){ sendFallback("London"); }
-
-        function submitFormWithCoords(lat, lon){
-            const form = buildForm("/?auto=1");
-            addHidden(form, "lat", lat);
-            addHidden(form, "lon", lon);
-            sessionStorage.setItem(GEO_FLAG, "1");
-            document.body.appendChild(form); form.submit();
-        }
-        function sendFallback(city){
-            const form = buildForm("/?auto=1");
-            addHidden(form, "name", city);
-            sessionStorage.setItem(GEO_FLAG, "1");
-            document.body.appendChild(form); form.submit();
-        }
-
-        function buildForm(action) {
-            const f = document.createElement("form");
-            f.method = "GET";
-            f.action = action;
-            return f;
-        }
-        function addHidden(form, name, value) {
-            const i = document.createElement("input");
-            i.type = "hidden"; i.name = name; i.value = value; form.appendChild(i);
-        }
-    </script>
 </body>
 </html>

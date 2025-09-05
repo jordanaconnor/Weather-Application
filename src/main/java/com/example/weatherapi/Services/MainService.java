@@ -57,4 +57,24 @@ public class MainService {
         boolean checkValue = wxCodeMeanings.containsKey(wxCode);
         return wxCodeMeanings.getOrDefault(wxCode, "Could not locate Weather Code");
     }
+
+    public String getWeatherIcon(int wxCode) {
+        return switch (wxCode) {
+            case 0 -> "wi wi-day-sunny";
+            case 1 -> "wi wi-day-cloudy-high";
+            case 2 -> "wi wi-day-cloudy";
+            case 3 -> "wi wi-cloudy";
+            case 45, 48 -> "wi wi-fog";
+            case 51, 53, 55 -> "wi wi-sprinkle";
+            case 56, 57, 66, 67, 77 -> "wi wi-sleet";
+            case 61, 63, 65 -> "wi wi-rain";
+            case 71, 73, 75, 85 -> "wi wi-snow";
+            case 80, 81 -> "wi wi-showers";
+            case 82 -> "wi wi-rain-wind";
+            case 86 -> "wi wi-snow-wind";
+            case 95 -> "wi wi-storm-showers";
+            case 96, 99 -> "wi wi-thunderstorm";
+            default -> "wi wi-refresh";
+        };
+    }
 }

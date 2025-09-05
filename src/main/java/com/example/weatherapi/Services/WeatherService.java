@@ -14,6 +14,7 @@ public class WeatherService {
     public LocationData geocodeCity(String city) {
         String url = "https://geocoding-api.open-meteo.com/v1/search?name=" + city + "&count=1&language=en&format=json";
         LocationResponse response = restTemplate.getForObject(url, LocationResponse.class);
+        assert response != null;
         return response.getResults().getFirst();
     }
 

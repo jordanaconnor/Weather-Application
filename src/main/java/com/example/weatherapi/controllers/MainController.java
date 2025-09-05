@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class MainController {
@@ -42,21 +43,12 @@ public class MainController {
         String locationName;
 
         try {
-            if (lat != null && lon != null) {
-                // direct coords provided (from geolocation/localStorage)
-                weather = weatherService.getByCoords(lat, lon);
-                locationName = "Your Location";
-            } else if (name != null && !name.isBlank()) {
-                // lookup by city name
-                LocationData geo = weatherService.geocodeCity(name);
-                weather = weatherService.getByCoords(geo.getLatitude(), geo.getLongitude());
-                locationName = geo.getName();
-            } else {
-                // fallback default (London or whatever you prefer)
-                LocationData geo = weatherService.geocodeCity("London");
-                weather = weatherService.getByCoords(geo.getLatitude(), geo.getLongitude());
-                locationName = geo.getName();
-            }
+
+            // London as default
+            LocationData locationData = weatherService.geocodeCity("London");
+            weather = weatherService.getByCoords(locationData.getLatitude(), locationData.getLongitude());
+            locationName = locationData.getName();
+
 
             model.addAttribute("weather", weather);
             model.addAttribute("locationName", locationName);
