@@ -43,7 +43,6 @@ public class MainController {
         try {
 
             // London as default
-            LocationData locationData = new LocationData();
             weatherData = weatherService.getByCoords(51.50853, -0.12574, "C");
             model.addAttribute("weather", weatherData);
             model.addAttribute("MainService", service);

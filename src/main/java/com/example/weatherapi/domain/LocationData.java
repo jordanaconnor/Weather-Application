@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
 import java.util.List;
 
+//JSON storage. (Mainly used for Coordinate fetching to get weather data.)
+// The reason the getters & Setters are left are for future needs if I want to add more data to the sit
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationData {
 
@@ -24,7 +27,6 @@ public class LocationData {
     private String country = null;
     private String admin1 = null;
     private String admin2 = null;
-
 
     public int getId() {
         return id;

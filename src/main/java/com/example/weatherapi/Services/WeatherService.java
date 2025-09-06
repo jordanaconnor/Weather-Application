@@ -9,7 +9,6 @@ public class WeatherService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-
     public WeatherData getByCoords(double lat, double lon, String unit) {
         String url = "https://api.open-meteo.com/v1/forecast?latitude=" + lat
                 + "&longitude=" + lon
@@ -20,5 +19,4 @@ public class WeatherService {
                 + "&temperature_unit=" + ("F".equalsIgnoreCase(unit) ? "fahrenheit" : "celsius");
         return restTemplate.getForObject(url, WeatherData.class);
     }
-
 }

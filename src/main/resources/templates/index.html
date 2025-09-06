@@ -12,7 +12,7 @@
 </head>
 
 <body th:class="body">
-
+    <!--Source for video (open sourced) - https://www.pexels.com/@larkkid-dung-363901731/-->
     <video autoplay muted playsinline loop class="background-video">
         <source th:src="@{/media/videos/Clear_Skies_HD.mp4}" type="video/mp4">
     </video>
@@ -20,7 +20,7 @@
     <header class="header">
         <h1 style="text-align: center">The Local Sky Network</h1>
     </header>
-
+    <!--Search Bar and Temp Toggle-->
     <div class="search-bar">
         <form th:action="@{/}" th:object="${location}" method="post" class="search-form">
             <input type="search" placeholder="Search city or postal code" th:field="*{name}" class="search-input">
@@ -35,14 +35,14 @@
         </form>
     </div>
 
-
+    <!--Main Panel-->
     <main  class="center-panel">
         <div>
             <span th:text="${locationName ?: ''}"></span>
             <span th:if="${locationName == null}"> London, England, United Kingdom</span>
             <span th:text="${localTime}" style="float: right; text-align: right"></span>
         </div>
-
+        <!--Current Weather Card-->
         <div class="weather-sections">
             <div class="current-weather">
                 <!--Current Weather-->
@@ -59,6 +59,7 @@
                 </div>
             </div>
 
+            <!--Weekly Forecast Card-->
             <div class="seven-day">
                 <h4 style="text-align: center">7-Day Forecast</h4>
                 <div class="day-scroller">
@@ -76,7 +77,7 @@
                 </div>
             </div>
         </div>
-
+        <!--24-Hour Forecast Card-->
         <div class="hourly-header">
             <h4 style="text-align: center">24-Hour Forecast</h4>
             <div class="scroller">
@@ -92,6 +93,7 @@
         </div>
     </main>
     <script>
+        //Day + Hour card horizontal scrolling
         document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.day-scroller, .scroller').forEach(scroller => {
                 scroller.addEventListener('wheel', (evt) => {
@@ -101,15 +103,13 @@
             });
         });
 
+        //C to F Temp Toggle
         const toggle = document.getElementById('unitToggle');
         const form = document.querySelector('.search-form');
-
         toggle.addEventListener('change', () => {
             form.submit();
             //resubmit form to controller
         });
-
-
     </script>
 </body>
 </html>

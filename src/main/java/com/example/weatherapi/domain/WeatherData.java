@@ -2,6 +2,8 @@ package com.example.weatherapi.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+//JSON Data Storage for API fetching. Empty getters/setters are for future reference if I want to add more data to the site.
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherData {
 
@@ -13,6 +15,7 @@ public class WeatherData {
     private String timezone_abbreviation;
     private double elevation;
 
+    //Nested JSON data to Java Classes
     private Current current =  new Current();
     private CurrentUnits current_units = new CurrentUnits();
     private Daily daily = new Daily();

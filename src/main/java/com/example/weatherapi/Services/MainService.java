@@ -3,7 +3,6 @@ package com.example.weatherapi.Services;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +15,6 @@ public class MainService {
         LocalDate localDate = LocalDate.parse(date, inputFormatter);
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM dd");
         return localDate.format(outputFormatter);
-    }
-
-    public String trimDateFormat() {
-        OffsetDateTime now = OffsetDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH");
-        return now.format(formatter);
     }
 
     public String getCurrentTimeForZone(String zoneId) {
@@ -71,9 +64,13 @@ public class MainService {
             put(99, "Thunderstorm and Heavy Hail");
         }};
 
-        boolean checkValue = wxCodeMeanings.containsKey(wxCode);
         return wxCodeMeanings.getOrDefault(wxCode, "Could not locate Weather Code");
     }
+
+    //Open source weather icons from https://erikflowers.github.io/weather-icons/ //
+    // and/or
+    //https://github.com/erikflowers/weather-icons
+    //See the weather-icons.min.css file for more details.
 
     public String getWeatherIcon(int wxCode) {
         return switch (wxCode) {
