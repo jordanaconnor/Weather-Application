@@ -11,7 +11,7 @@ public class Daily {
 
     private List<String> time = new ArrayList<>(Collections.nCopies(7, "9999-01-01"));
     private List<Integer> weather_code = new ArrayList<>(Collections.nCopies(7, 0));
-    private List<Double> temperature_2m_max =  new ArrayList<>(Collections.nCopies(7, 0.00));
+    private List<Double> temperature_2m_max = new ArrayList<>(Collections.nCopies(7, 0.00));
     private List<Double> temperature_2m_min = new ArrayList<>(Collections.nCopies(7, 0.00));
     private List<Double> rain_sum = new ArrayList<>(Collections.nCopies(7, 0.00));
     private List<Double> showers_sum = new ArrayList<>(Collections.nCopies(7, 0.00));

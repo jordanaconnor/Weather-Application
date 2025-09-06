@@ -9,9 +9,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Hourly {
 
-    private List<String> time = new ArrayList<>(Collections.nCopies(168, "null"));
-    private List<Double> temperature_2m =  new ArrayList<>(Collections.nCopies(168, 0.00));
-    private List<Integer> weather_code = new ArrayList<>(Collections.nCopies(168, 0));
+    public List<String> time = new ArrayList<>(Collections.nCopies(168, "null"));
+    public List<Double> temperature_2m = new ArrayList<>(Collections.nCopies(168, 0.00));
+    public List<Integer> weather_code = new ArrayList<>(Collections.nCopies(168, 0));
 
     public List<String> getTime() {
         return time;

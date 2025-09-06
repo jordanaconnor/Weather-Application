@@ -3,6 +3,7 @@ package com.example.weatherapi.Services;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,23 @@ public class MainService {
         return localDate.format(outputFormatter);
     }
 
-    public String extractTime(String date) {
+    public String trimDateFormat() {
+        OffsetDateTime now = OffsetDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH");
+        return now.format(formatter);
+    }
+
+    public String getCurrentTimeForZone(String zoneId) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH");
+        return java.time.ZonedDateTime.now(java.time.ZoneId.of(zoneId)).format(formatter);
+    }
+
+    public String getLocalTimeForZone(String zoneId) {
+        DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+        return java.time.ZonedDateTime.now(java.time.ZoneId.of(zoneId)).format(displayFormat);
+    }
+
+    public String extractTime(@org.jetbrains.annotations.NotNull String date) {
         return date.substring(date.indexOf("T") + 1);
     }
 

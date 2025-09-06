@@ -2,15 +2,18 @@ package com.example.weatherapi.controllers;
 
 import com.example.weatherapi.Services.MainService;
 import com.example.weatherapi.Services.WeatherService;
-import com.example.weatherapi.domain.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.example.weatherapi.domain.LocationData;
+import com.example.weatherapi.domain.LocationResponse;
+import com.example.weatherapi.domain.WeatherData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 public class MainController {
@@ -24,7 +27,8 @@ public class MainController {
     WeatherService weatherService =  new WeatherService();
     MainService service = new MainService();
     double latitude = 0,longitude = 0;
-    String locationName = "", country = "", state = "", city ="";
+    String locationName = "", country = "", state = "", city = "", zoneId = "";
+
 
     public MainController(WeatherService weatherService, MainService service) {
         this.weatherService = weatherService;
@@ -32,54 +36,59 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String showDashboard(@RequestParam(required=false) Double lat,
-                                @RequestParam(required=false) Double lon,
-                                @RequestParam(required=false) String name,
-                                Model model) {
+    public String showDashboard(Model model) {
 
-        model.addAttribute("location", new LocationData());
-
-        WeatherData weather;
-        String locationName;
+        WeatherData weatherData;
 
         try {
 
             // London as default
-            LocationData locationData = weatherService.geocodeCity("London");
-            weather = weatherService.getByCoords(locationData.getLatitude(), locationData.getLongitude());
-            locationName = locationData.getName();
-
-
-            model.addAttribute("weather", weather);
-            model.addAttribute("locationName", locationName);
+            LocationData locationData = new LocationData();
+            weatherData = weatherService.getByCoords(51.50853, -0.12574, "C");
+            model.addAttribute("weather", weatherData);
             model.addAttribute("MainService", service);
+            model.addAttribute("unit", "C");
+
+            zoneId = weatherData.getTimezone();
+            String currentTime = service.getCurrentTimeForZone(zoneId);
+
+            int currentHourIndex = 0;
+            for (int i = 0; i < weatherData.getHourly().getTime().size(); i++) {
+                String time = weatherData.getHourly().getTime().get(i);
+                if (time.startsWith(currentTime)) {
+                    currentHourIndex = i;
+                    break;
+                }
+            }
+            model.addAttribute("currentHourIndex", currentHourIndex);
+
+            //Grab the local time
+            String localTime = service.getLocalTimeForZone(zoneId);
+            model.addAttribute("localTime", localTime);
 
         } catch (Exception e) {
-            System.out.println("Error fetching weather: " + e.getMessage());
+            System.out.println("Error fetching weatherData: " + e.getMessage());
         }
-
         return "index";
     }
 
     //Map the user input to API search
     @PostMapping("/")
-    public String locationSubmit(@ModelAttribute LocationData location,
-                                 @RequestParam(required = false) Double lat,
-                                 @RequestParam(required = false) Double lon,
-                                 Model model) {
+    public String locationSubmit(@ModelAttribute LocationData location, @RequestParam(required = false, defaultValue = "C") String unit, Model model) {
 
-        if (lat != null && lon != null) {
-            latitude = lat;
-            longitude = lon;
-            locationName = "Your Location";
+        if (location.getName() == null || location.getName().isBlank()) {
+            city = "London";
         } else {
             city = location.getName().replaceAll(" ", "+");
-            String url = "https://geocoding-api.open-meteo.com/v1/search?name=" + city + "&count=1&language=en&format=json";
+        }
+
+        String url = "https://geocoding-api.open-meteo.com/v1/search?name=" + city + "&count=1&language=en&format=json";
 
             //GET API provided coordinates
-            try {
-                LocationResponse response = restTemplate.getForObject(url, LocationResponse.class);
-                assert response != null;
+        try {
+            LocationResponse response = restTemplate.getForObject(url, LocationResponse.class);
+
+            if (response != null && response.getResults() != null && !response.getResults().isEmpty()) {
                 LocationData results = response.getResults().getFirst();
                 latitude = results.getLatitude();
                 longitude = results.getLongitude();
@@ -87,43 +96,62 @@ public class MainController {
                 country = results.getCountry();
                 state = results.getAdmin1();
                 model.addAttribute("location", location);
-                System.out.println(location);
-
-                ObjectMapper objectMapperTest = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-                //wxResponse = objectMapper.convertValue(wxResponse, WeatherData.class);
-                results = objectMapperTest.convertValue(results, LocationData.class);
-                String json = objectMapperTest.writeValueAsString(results);
-                //            System.out.println(json);
-                //print JSON data to console
 
                 if (results.getAdmin1().equals(results.getName())) {
                     model.addAttribute("locationName", locationName + ", " + country);
                 } else {
                     model.addAttribute("locationName", locationName + ", " + state + ", " + country);
                 }
-
-                System.out.println(
-                        "*****************Location API Data***********************"
-                                + "\n" + url + "\n" + locationName + "\n" + country + "\n" + state + "\n" + latitude + "\n" + longitude + "\n"
-                                + "*********************************************************"
-                );
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } else {
+                // fallback to London if geocoding fails
+                latitude = 51.50853;
+                longitude = -0.12574;
+                locationName = "London";
+                country = "United Kingdom";
+                state = "England";
+                model.addAttribute("locationName", "London, England, United Kingdom");
             }
+        } catch (Exception e) {
+            System.out.println("Geocoding error: " + e.getMessage());
+            // also fallback
+            latitude = 51.50853;
+            longitude = -0.12574;
+            model.addAttribute("locationName", "London, England, United Kingdom");
         }
-        //Weather API GET call using Geo Coordinates from above^^
-        String weatherURL = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&hourly=,temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_gusts_10m,wind_direction_10m,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto";
-        System.out.println(weatherURL);
+
+        String weatherURL;
+        if ("F".equalsIgnoreCase(unit)) {
+            weatherURL = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&hourly=,temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_gusts_10m,wind_direction_10m,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto";
+            System.out.println(weatherURL);
+        } else {
+            weatherURL = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&daily=weather_code,temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&hourly=,temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_gusts_10m,wind_direction_10m,wind_speed_10m&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto";
+            System.out.println(weatherURL);
+        }
+
 
         try{
-            ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
             WeatherData wxResponse = restTemplate.getForObject(weatherURL, WeatherData.class); //GET API Data call
-            //wxResponse = objectMapper.convertValue(wxResponse, WeatherData.class);
-            String json = objectMapper.writeValueAsString(wxResponse);
             model.addAttribute("weather", wxResponse);
             model.addAttribute("MainService", service);
-            //print JSON data to console
-            //System.out.println(json);
+            model.addAttribute("unit", unit);
+
+
+            zoneId = wxResponse.getTimezone();
+            String currentTime = service.getCurrentTimeForZone(zoneId);
+
+            int currentHourIndex = 0;
+            for (int i = 0; i < wxResponse.getHourly().getTime().size(); i++) {
+                String time = wxResponse.getHourly().getTime().get(i);
+                if (time.startsWith(currentTime)) {
+                    currentHourIndex = i;
+                    break;
+                }
+            }
+            model.addAttribute("currentHourIndex", currentHourIndex);
+
+            //Grab the local time
+            String localTime = service.getLocalTimeForZone(zoneId);
+            model.addAttribute("localTime", localTime);
         }catch(Exception e){
             System.out.println(e.getMessage());
         }

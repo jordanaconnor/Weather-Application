@@ -3,7 +3,11 @@
     width: 100vw; height: 100vh;
     object-fit: cover;
     z-index: -1;
-    filter: brightness(0.6); /* darken for readable overlay */
+    filter: brightness(0.6);
+}
+
+h1 {
+    font-family: 'Oxanium', sans-serif;
 }
 
 .body {
@@ -11,9 +15,11 @@
     grid-template-rows: 0.1fr 0.03fr 1fr;
     grid-template-columns: .25fr 2fr .25fr;
     gap: 1rem;
-    min-height: 100svh; /* mobile-friendly viewport */
+    min-height: 100svh;
     align-items: start;
     padding-block: 2rem;
+    font-family: 'Merriweather', serif;
+
 }
 
 .header {
@@ -24,27 +30,17 @@
 .search-bar {
     grid-row: 2;
     grid-column: 2;
-    display: flex;              /* flexbox container */
-    justify-content: center;    /* center horizontally */
+    display: flex;
+    justify-content: center;
 }
 .search-bar form {
     display: flex;
-    gap: 0.5rem;                /* space between input + buttons */
+    gap: 0.5rem;
     align-items: center;
 }
 
 
-/* --- Glassy overlay panels --- */
-.center-panel,
-.sidebar {
-    background: rgba(15, 15, 20, 0.55);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.35);
-    color: #fff;
-}
+/* Glassy overlay panels  */
 .location-name {
     justify-content: center;
 }
@@ -52,26 +48,29 @@
 .center-panel {
     grid-row: 3;
     grid-column: 2;
-
+    background: rgba(15, 15, 20, 0.55);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    color: #fff;
     padding: 1rem;
-    width: 100%;           /* fill the grid column */
-    max-width: 900px;      /* cap so it doesn’t get too wide */
-    min-width: 320px;      /* cap so it doesn’t collapse too small */
-
-    margin: 0 auto;        /* center inside column */
+    width: 100%;
+    max-width: 900px;
+    min-width: 320px;
+    margin: 0 auto;
     box-sizing: border-box;
 }
 
 .weather-sections {
-    display: flex;
-    gap: 1.5rem;          /* space between panels */
-    flex-wrap: wrap;      /* stack on smaller screens */
+    display: block;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
-.current-weather,
-.seven-day {
-    flex: 1 1 0;          /* let them share width */
-    min-width: 280px;     /* don’t shrink too far */
+.current-weather {
+    flex: 1 1 0;
+    min-width: 280px;
 }
 
 .current-weather {
@@ -86,17 +85,17 @@
 }
 
 .current-weather-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-height: 150px;
-    margin: 3rem 0;
+    position: relative;
+    width: 100%;
+    height: 15rem;
 }
 
 .current-weather-icon i {
-    font-size: clamp(10rem, 5vw, 6rem);
-    color: #ffffff;
-    line-height: 6rem;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 9rem;
 }
 
 #current-icon {
@@ -107,20 +106,60 @@
 }
 
 .seven-day {
+    flex-basis: 100%;
+    margin-top: 1rem;
     background: rgba(255,255,255,0.08);
     border-radius: 12px;
     padding: 1rem;
 }
 
+.scroller,
+.day-scroller {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0.75rem;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    white-space: nowrap;}
 
-.sidebar {
-    grid-column: 3;
-    padding: 1rem;
-    position: sticky; top: 1rem;  /* stays visible while scrolling */
-    height: fit-content;
+.hour-card,
+.day-card {
+    flex: 0 0 auto;
+    min-width: 120px;
+    max-width: 150px;
+    padding: 0.75rem;
+    margin: 0.25rem 0;
+    text-align: center;
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    scroll-snap-align: start;
 }
 
-/* --- Hourly slider: Flex + scroll snap --- */
+.left-sentence {
+    margin-right: 2rem;
+}
+
+.day-scroller {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0.75rem;
+    scroll-snap-type: x mandatory;
+    white-space: nowrap;
+    max-width: 100%;
+    margin-top: 0.5rem;
+}
+
+.seven-day i {
+    font-size: clamp(4rem, 5vw, 2rem);
+    color: #ffffff;
+    line-height: 6rem;
+}
+
 .scroller {
     display: flex;
     flex-direction: row;
@@ -128,49 +167,162 @@
     overflow-y: hidden;
     gap: 0.75rem;
     scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
-    max-width: 100%;     /* limited to center-panel width */
-    margin-top: 0.5rem;  /* breathing space */
 }
 
+.scroller i {
+    font-size: clamp(2rem, 5vw, 2rem);
+}
+.hourly-header {
+    flex-basis: 100%;
+    margin-top: 1rem;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 1rem;
+}
 
 .hour-card {
-    flex: 0 0 auto;             /* horizontal row, no shrink */
-    min-width: 120px;           /* give enough room */
-    max-width: 150px;           /* optional: prevent oversized cards */
-    padding: 0.75rem;           /* space inside */
-    margin: 0.25rem 0;          /* vertical breathing room */
+    flex: 0 0 auto;
+    min-width: 120px;
+    max-width: 150px;
+    padding: 0.75rem;
+    margin: 0.25rem 0;
     text-align: center;
-    white-space: normal;        /* allow wrapping inside the card */
-
+    white-space: normal;
     background: rgba(255,255,255,0.15);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-
     scroll-snap-align: start;
 }
 
 .hour-card span {
-    display: block;      /* stack weather + temp vertically */
+    display: block;
     font-size: 0.9rem;
     line-height: 1.3;
     color: #fff;
 }
 .hour-card span:last-child {
-    font-weight: bold;   /* temp stands out */
+    font-weight: bold;
     margin-top: 0.25rem;
 }
 
-/* --- Day list --- */
+
 .day-card {
-    background: rgba(255,255,255,0.08);
+    flex: 0 0 auto;
+    min-width: 120px;
+    max-width: 150px;
+    padding: 0.75rem;
+    margin: 0.25rem 0;
+    text-align: center;
+    background: rgba(255,255,255,0.15);
     border-radius: 12px;
-    padding: 0.75rem 1rem;
-    & + .day-card { margin-top: 0.5rem; }
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    scroll-snap-align: start;
 }
 
-/* --- Footer across full width --- */
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-input {
+    width: 250px;
+    padding: 0.6rem 1rem;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    outline: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 1rem;
+    transition: 0.2s ease-in-out;
+}
+
+.search-input::placeholder {
+    color: #bbb;
+}
+
+.search-input:focus {
+    border-color: #fff;
+    background: rgba(255,255,255,0.25);
+}
+
+.search-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 20px;
+    background: #2E4A7D;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.search-btn:hover {
+    background: #357ab8;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    top: 3px;
+    background-color: midnightblue;
+    border-radius: 50%;
+    transition: 0.3s;
+    z-index: 2;
+}
+
+.slider::after {
+    content: "C";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #000;
+    transition: 0.3s;
+}
+
+input:checked + .slider {
+    background-color: #4a90e2;
+}
+
+input:checked + .slider:before {
+    transform: translateX(32px);
+}
+
+input:checked + .slider::after {
+    content: "F";
+    left: 8px;
+    right: auto;
+}
+
 .site-footer {
     position: relative;
     z-index: 1;
@@ -180,27 +332,26 @@
     text-shadow: 0 1px 2px rgba(0,0,0,0.6);
 }
 
-/* --- Responsive: collapse sidebar under center panel --- */
 @media (max-width: 960px) {
-    .search-bar{
-        display: none;
-    }
-    .header-middle {
-        flex-grow: 0;
-        margin-left: auto;
-        margin-right: 1.5rem;
+    .search-bar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.5rem;
     }
 
-    .page {
-        grid-template-columns:
-      minmax(12px, 1fr)
-      minmax(320px, 1fr)
-      0
-      minmax(12px, 1fr);
+    .search-input {
+        width: 100%;
+        max-width: 300px;
     }
-    .sidebar {
-        grid-column: 2;
-        position: static;
-        margin-top: 1rem;
+
+    .search-btn {
+        width: auto;
+    }
+
+    .unit-toggle {
+        margin: 0.5rem 0 0 0;
     }
 }
