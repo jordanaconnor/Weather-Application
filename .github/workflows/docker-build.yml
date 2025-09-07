@@ -1,0 +1,37 @@
+name: Build and Push Docker image
+
+on:
+  push:
+    branches: [ "master" ]   # run only on main branch
+  workflow_dispatch:        # allow manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout source
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up JDK for Maven (not strictly needed since build happens inside Docker, but useful if you add tests later)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # Step 3: Log in to GHCR
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.PORTFOLIO_PAT }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+
+      # Step 4: Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg JAR_FILE=target/*.jar \
+            -t ghcr.io/${{ github.repository }}/spring-app:latest .
+
+      # Step 5: Push image
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository }}/spring-app:latest
