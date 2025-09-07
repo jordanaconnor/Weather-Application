@@ -70,7 +70,7 @@ public class MainService {
     //Open source weather icons from https://erikflowers.github.io/weather-icons/ //
     // and/or
     //https://github.com/erikflowers/weather-icons
-    //See the weather-icons.min.css file for more details.
+    //Please see the weather-icons.min.css file for more details.
 
     public String getWeatherIcon(int wxCode) {
         return switch (wxCode) {
