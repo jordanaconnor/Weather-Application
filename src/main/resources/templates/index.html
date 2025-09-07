@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Weather App</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/weather-icons.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Oxanium:wght@200..800&display=swap" rel="stylesheet">
+</head>
+
+<body th:class="body">
+    <!--Source for video (open sourced) - https://www.pexels.com/@larkkid-dung-363901731/-->
+    <video autoplay muted playsinline loop class="background-video">
+        <source th:src="@{/media/videos/Clear_Skies_HD.mp4}" type="video/mp4">
+    </video>
+
+    <header class="header">
+        <h1 style="text-align: center">The Local Sky Network</h1>
+    </header>
+    <!--Search Bar and Temp Toggle-->
+    <div class="search-bar">
+        <form th:action="@{/}" th:object="${location}" method="post" class="search-form">
+            <input type="search" placeholder="Search city or postal code" th:field="*{name}" class="search-input">
+            <button type="submit" class="search-btn">Search</button>
+            <div class="unit-toggle">
+                <label class="switch">
+                    <input type="checkbox" name="unit" value="F" id="unitToggle"
+                           th:checked="${unit == 'F'}">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </form>
+    </div>
+
+    <!--Main Panel-->
+    <main  class="center-panel">
+        <div>
+            <span th:text="${locationName ?: ''}"></span>
+            <span th:if="${locationName == null}"> London, England, United Kingdom</span>
+            <span th:text="${localTime}" style="float: right; text-align: right"></span>
+        </div>
+        <!--Current Weather Card-->
+        <div class="weather-sections">
+            <div class="current-weather">
+                <!--Current Weather-->
+                <div class="current-weather-icon">
+                    <i th:class="${MainService.getWeatherIcon(weather.current.weather_code)}"></i>
+                </div>
+
+                <div th:if="${weather.current.temperature_2m != 0.00}">
+                    <br><span th:text="${MainService.convertWXCode(weather.current.weather_code)}" /><br><br>
+                    <span class="left-sentence"
+                          th:text="'Currently ' + ${weather.current.temperature_2m} + ${weather.current_units.temperature_2m}"/>
+                    <span class="right-sentence"
+                          th:text="'Feels like: ' + ${weather.current.apparent_temperature} + ${weather.current_units.apparent_temperature}"/><br>
+                </div>
+            </div>
+
+            <!--Weekly Forecast Card-->
+            <div class="seven-day">
+                <h4 style="text-align: center">7-Day Forecast</h4>
+                <div class="day-scroller">
+                    <article class="day-card"
+                             th:each="day : ${#numbers.sequence(0, weather.daily.time.size() -1)}"
+                             th:if="${MainService.convertDateFormat(weather.daily.time[day]) != 'Jan 01'}">
+
+                        <i th:class="${MainService.getWeatherIcon(weather.daily.weather_code[day])}"></i><br>
+                        <div th:text="${MainService.convertWXCode(weather.daily.weather_code[day])}"></div>
+                        <span th:text="'High: ' + ${weather.daily.temperature_2m_max[day]} + ${weather.daily_units.temperature_2m_max}"></span>
+                        <div th:text="'Low: ' + ${weather.daily.temperature_2m_min[day]} + ${weather.daily_units.temperature_2m_min}"></div>
+
+                        <div th:text="${MainService.convertDateFormat(weather.daily.time[day])}"></div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        <!--24-Hour Forecast Card-->
+        <div class="hourly-header">
+            <h4 style="text-align: center">24-Hour Forecast</h4>
+            <div class="scroller">
+                <div class="hour-card"
+                     th:each="hour : ${#numbers.sequence(currentHourIndex, currentHourIndex + 23)}"
+                     th:if="${MainService.convertWXCode(weather.hourly.weather_code[hour]) != 0 and weather.hourly.temperature_2m[hour] != 0.00}">
+                    <i th:class="${MainService.getWeatherIcon(weather.hourly.weather_code[hour])}"></i><br>
+                    <span th:text="${MainService.convertWXCode(weather.hourly.weather_code[hour])}"></span>
+                    <span th:text="${weather.hourly.temperature_2m[hour]} + ${weather.hourly_units.temperature_2m}"></span>
+                    <span th:text="${MainService.extractTime(weather.hourly.time[hour])}"></span>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        //Day + Hour card horizontal scrolling
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('.day-scroller, .scroller').forEach(scroller => {
+                scroller.addEventListener('wheel', (evt) => {
+                    evt.preventDefault();
+                    scroller.scrollLeft += evt.deltaY;
+                });
+            });
+        });
+
+        //C to F Temp Toggle
+        const toggle = document.getElementById('unitToggle');
+        const form = document.querySelector('.search-form');
+        toggle.addEventListener('change', () => {
+            form.submit();
+            //resubmit form to controller
+        });
+    </script>
+</body>
+</html>
