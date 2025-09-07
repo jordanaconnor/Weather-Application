@@ -1,4 +1,4 @@
-package com.example.weatherapi.Services;
+package com.example.weatherapplication.Services;
 
 import org.springframework.stereotype.Service;
 

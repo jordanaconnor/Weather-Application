@@ -1,4 +1,4 @@
-package com.example.weatherapi.domain;
+package com.example.weatherapplication.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

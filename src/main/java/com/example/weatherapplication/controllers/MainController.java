@@ -1,10 +1,10 @@
-package com.example.weatherapi.controllers;
+package com.example.weatherapplication.controllers;
 
-import com.example.weatherapi.Services.MainService;
-import com.example.weatherapi.Services.WeatherService;
-import com.example.weatherapi.domain.LocationData;
-import com.example.weatherapi.domain.LocationResponse;
-import com.example.weatherapi.domain.WeatherData;
+import com.example.weatherapplication.Services.MainService;
+import com.example.weatherapplication.Services.WeatherService;
+import com.example.weatherapplication.domain.LocationData;
+import com.example.weatherapplication.domain.LocationResponse;
+import com.example.weatherapplication.domain.WeatherData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

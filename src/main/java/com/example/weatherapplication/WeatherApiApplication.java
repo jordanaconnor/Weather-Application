@@ -1,4 +1,4 @@
-package com.example.weatherapi;
+package com.example.weatherapplication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

@@ -1,6 +1,6 @@
-package com.example.weatherapi.Services;
+package com.example.weatherapplication.Services;
 
-import com.example.weatherapi.domain.WeatherData;
+import com.example.weatherapplication.domain.WeatherData;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
