@@ -2,15 +2,15 @@ name: Build and Push Docker image
 
 on:
   push:
-    branches: [ "master" ]   # change to "main" if your repo default is main
-  workflow_dispatch:        # allow manual trigger from Actions tab
+    branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write   # critical for GHCR push
+      packages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -20,16 +20,17 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/weather-application/spring-app
-          docker build -t $IMAGE:latest .
-          docker push $IMAGE:latest
-
-
-      # Step 5: Push Docker image
-      - name: Push Docker image
-        run: |
           IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/weather-application/spring-app
           GIT_SHA=${{ github.sha }}
+
+          docker build \
+            --build-arg JAR_FILE=target/*.jar \
+            -t $IMAGE_NAME:latest \
+            -t $IMAGE_NAME:$GIT_SHA .
+
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:$GIT_SHA
+
 
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$GIT_SHA
