@@ -2,7 +2,7 @@ name: Build and Push Docker image
 
 on:
   push:
-    branches: [ "master" ]   # adjust if your default is 'main'
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write   # required for GHCR
+      packages: write
 
     steps:
       - uses: actions/checkout@v4

@@ -88,7 +88,7 @@ public class MainController {
             LocationResponse response = restTemplate.getForObject(url, LocationResponse.class);
 
             if (response != null && response.getResults() != null && !response.getResults().isEmpty()) {
-                LocationData results = response.getResults().getFirst();
+                LocationData results = response.getResults().get(0);
                 latitude = results.getLatitude();
                 longitude = results.getLongitude();
                 locationName = results.getName();
