@@ -8,10 +8,8 @@ RUN mvn clean package -DskipTests
 # Stage 2: Run JAR
 FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
-
-# Define JAR_FILE as a build arg (default to all jars in target)
-ARG JAR_FILE=/app/target/*.jar
-COPY --from=builder ${JAR_FILE} app.jar
-
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
