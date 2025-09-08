@@ -6,7 +6,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run JAR
-FROM eclipse-temurin:17-jdk-jammy
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
